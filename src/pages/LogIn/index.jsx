@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Cookies from 'js-cookie';
-import { isChecked, fetchNewsFailure } from 'redux/actions';
+import { isChecked, fetchNewsFailure, getCurrentUserId } from 'redux/actions';
 import { useHistory } from "react-router-dom";
 
 const LogIn = () => {
@@ -33,9 +33,10 @@ const LogIn = () => {
           dispatch(fetchNewsFailure(element.message));
         } else {
           Cookies.set('token', element.jwt);
-          Cookies.set('userId', element.user.id);
+          const cookie = Cookies.set('userId', element.user.id);
+          dispatch(getCurrentUserId(cookie));
           dispatch(isChecked());
-          history.push('/home');
+          history.push('/');
         }
       });
   };
@@ -43,11 +44,11 @@ const LogIn = () => {
     <form onSubmit={logInFetch}>
       <label>
         email :
-        <input type="email" name="email" onChange={(event) => setUserEmail(event.target.value)} />
+        <input type="email" name="email" value={userEmail} onChange={(event) => setUserEmail(event.target.value)} />
       </label>
       <label>
         password :
-        <input type="password" name="password" onChange={(event) => setUserPassword(event.target.value)} />
+        <input type="password" name="password" value={userPassword} onChange={(event) => setUserPassword(event.target.value)} />
       </label>
       <input type="submit" value="Envoyer" />
     </form>

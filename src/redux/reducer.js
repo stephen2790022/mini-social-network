@@ -1,11 +1,17 @@
+/* eslint-disable no-unneeded-ternary */
 /* eslint-disable import/no-unresolved */
-import { CHECKED, FETCH_NEWS_FAILURE, UN_CHECK } from 'redux/actionsVariables';
+import {
+  CHECKED, FETCH_NEWS_FAILURE, UN_CHECK, USERINFO, CURRENTUSERID,
+} from 'redux/actionsVariables';
+import Cookies from 'js-cookie';
 
+const cookie = Cookies.get('userId');
 const initialState = {
-  checked: false,
+  checked: cookie ? true : false,
   error: '',
+  info: null,
+  currentUser: cookie,
 };
-
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case CHECKED:
@@ -13,15 +19,25 @@ const reducer = (state = initialState, action) => {
         ...state,
         checked: true,
       };
+    case UN_CHECK:
+      return {
+        ...state,
+        checked: false,
+      };
     case FETCH_NEWS_FAILURE:
       return {
         ...state,
         error: action.error,
       };
-    case UN_CHECK:
+    case USERINFO:
       return {
         ...state,
-        checked: false,
+        info: action.info,
+      };
+    case CURRENTUSERID:
+      return {
+        ...state,
+        currentUser: action.currentUserID,
       };
     default:
       return state;
